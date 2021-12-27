@@ -37,7 +37,7 @@ class Body extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            margin: const EdgeInsets.only(bottom: 21),
+            margin: const EdgeInsets.only(bottom: 20),
             child: Container(
               padding: const EdgeInsets.all(30),
               margin: const EdgeInsets.all(4),
