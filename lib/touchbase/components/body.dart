@@ -7,7 +7,7 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 10),
+      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 8),
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
       height: size.height,
       decoration: const BoxDecoration(
@@ -37,7 +37,7 @@ class Body extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            margin: const EdgeInsets.only(bottom: 20),
+            margin: const EdgeInsets.only(bottom: 22),
             child: Container(
               padding: const EdgeInsets.all(30),
               margin: const EdgeInsets.all(4),
