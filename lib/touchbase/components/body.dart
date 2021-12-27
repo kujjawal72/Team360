@@ -26,12 +26,18 @@ class Body extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          
+          Container(
+            padding: EdgeInsets.only(top: 10,bottom: 5),
+              alignment: Alignment.center,
+              child: Text("Welcome Touchbase", style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)),
+          
           Container(
             decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            margin: const EdgeInsets.only(top: 20),
+            margin: const EdgeInsets.only(bottom: 20),
             child: Container(
               padding: const EdgeInsets.all(30),
               margin: const EdgeInsets.all(4),
@@ -50,7 +56,7 @@ class Body extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.all(5),
             child: Container(
               padding: const EdgeInsets.all(30),
               margin: const EdgeInsets.all(4),
@@ -69,7 +75,7 @@ class Body extends StatelessWidget {
           Container(
             alignment: Alignment.bottomCenter,
             padding: EdgeInsets.all(12),
-            margin: EdgeInsets.only(left: 30,right: 30,top: 10,bottom: 10),
+            margin: EdgeInsets.only(left: 30,right: 30,top: 10,bottom: 5),
             decoration: BoxDecoration(
               color: Color(0xFF28c800),
               borderRadius: BorderRadius.all(Radius.circular(25))
