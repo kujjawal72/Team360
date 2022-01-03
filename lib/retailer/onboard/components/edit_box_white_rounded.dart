@@ -47,7 +47,7 @@ class _EditBoxWhiteRoundedState extends State<EditBoxWhiteRounded> {
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
         ),
-
+        style: const TextStyle(fontSize: 18),
         obscureText: false,
         autofocus: false,
         onChanged: widget.onChanged,

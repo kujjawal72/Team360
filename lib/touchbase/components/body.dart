@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:team360/touchbase/touchbase_details.dart';
 
 class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);
@@ -26,12 +27,16 @@ class Body extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          
           Container(
-            padding: EdgeInsets.only(top: 10,bottom: 5),
+              padding: EdgeInsets.only(top: 10, bottom: 5),
               alignment: Alignment.center,
-              child: Text("Welcome Touchbase", style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)),
-          
+              child: Text(
+                "Welcome Touchbase",
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              )),
           Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -50,7 +55,6 @@ class Body extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -71,18 +75,28 @@ class Body extends StatelessWidget {
               ),
             ),
           ),
-
-          Container(
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.all(12),
-            margin: EdgeInsets.only(left: 30,right: 30,top: 10,bottom: 5),
-            decoration: BoxDecoration(
-              color: Color(0xFF28c800),
-              borderRadius: BorderRadius.all(Radius.circular(25))
+          InkWell(
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.all(12),
+              margin: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 5),
+              decoration: BoxDecoration(
+                  color: Color(0xFF28c800),
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Check-In",
+                    style: TextStyle(fontSize: 20, color: Colors.white,fontWeight: FontWeight.bold),
+                  )),
             ),
-            child: Align(
-              alignment: Alignment.center,
-                child: Text("Check-In",style: TextStyle(fontSize: 22,color: Colors.white),)),
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => const TouchbaseDetails()),
+              );
+            },
           )
         ],
       ),

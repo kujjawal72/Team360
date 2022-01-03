@@ -12,5 +12,6 @@ class MyColor{
   static const dashboardCardColor = Color(0xFF6ae0d9);
   static const dashboardCardShadowColor = Color(0xFF8e82d9);
   static const onBoardBtnColor = Color(0xFFc8b400);
+  static const touchbaseDetailsPageColor = Color(0xFFefeef0);
   static const black = Colors.black;
 }
