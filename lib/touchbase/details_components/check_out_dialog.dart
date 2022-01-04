@@ -46,7 +46,7 @@ class CheckoutFeedbackDialog {
                   left: size.width * 0.1,
                   right: size.width * 0.1),
               alignment: Alignment.center,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: Color(0xFF3c3c3c),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   boxShadow: [
@@ -55,7 +55,7 @@ class CheckoutFeedbackDialog {
                         color: Colors.white,
                         offset: Offset(2.0, 2.0))
                   ]),
-              child: Text(
+              child: const Text(
                 "Submit",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
