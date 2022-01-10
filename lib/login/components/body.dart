@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:team360/base/response.dart';
+import 'package:team360/home/home.dart';
 import 'package:team360/login/components/background.dart';
+import 'package:team360/login/model/models.dart';
+import 'package:team360/login/viewmodel/login_viewmodel.dart';
 import 'package:team360/main.dart';
 import 'package:team360/util/my_colors.dart';
+import 'package:team360/util/profile_manager.dart';
+import 'package:team360/util/utils.dart';
 
-class Body extends StatelessWidget {
-  const Body({Key? key}) : super(key: key);
+class Body extends StatefulWidget {
+  final String2VoidCallback onLogin;
+  const Body({Key? key,required this.onLogin}) : super(key: key);
+
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +54,23 @@ class Body extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
             width: size.width * 0.9,
-            child: const TextField(
-              decoration: InputDecoration(
+            child: TextField(
+              decoration: const InputDecoration(
                   labelText: 'User Name', border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
               obscureText: false,
               autofocus: false,
+              controller: _usernameController,
             ),
           ),
           Container(
             margin: const EdgeInsets.only(top: 20),
             width: size.width * 0.9,
-            child: const TextField(
-              decoration: InputDecoration(
+            child: TextField(
+              decoration: const InputDecoration(
                   labelText: 'Password', border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
               obscureText: true,
               autofocus: false,
+              controller: _passwordController,
             ),
           ),
           SizedBox(
@@ -53,15 +79,7 @@ class Body extends StatelessWidget {
           SizedBox(
             width: size.width * 0.9,
             height: 45,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-              },
-              child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
-              style: ElevatedButton.styleFrom(
-                primary: MyColor.signInButton,
-              ),
-            ),
+            child: getSigninWidget(),
           ),
           Container(
             width: size.width * 0.9,
@@ -101,5 +119,63 @@ class Body extends StatelessWidget {
         ],
       ),
     ));
+  }
+
+  getSigninWidget() {
+    Response response = Provider.of<LoginViewModel>(context).loginResponse;
+    switch(response.status){
+
+      case Status.ERROR:
+        return ElevatedButton(
+          onPressed: (){
+            final username = _usernameController.text.trim();
+            final password = _passwordController.text.trim();
+            if(username.isEmpty || password.isEmpty) return;
+
+            widget.onLogin(username,password);
+          },
+          child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
+          style: ElevatedButton.styleFrom(
+            primary: MyColor.signInButton,
+          ),
+        );
+      case Status.INITIAL:
+        return ElevatedButton(
+          onPressed: (){
+            final username = _usernameController.text.trim();
+            final password = _passwordController.text.trim();
+            if(username.isEmpty || password.isEmpty) return;
+
+            widget.onLogin(username,password);
+          },
+          child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
+          style: ElevatedButton.styleFrom(
+            primary: MyColor.signInButton,
+          ),
+        );
+      case Status.LOADING:
+        return const Center(child: CircularProgressIndicator());
+      case Status.COMPLETED:
+        final res = response.data as LoginResponse;
+        if(res.attributes.status == "success"){
+          ProfileManager.createProfile(res.responseList);
+          WidgetsBinding.instance!.addPostFrameCallback((_){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+          });
+        }
+        return ElevatedButton(
+          onPressed: (){
+            final username = _usernameController.text.trim();
+            final password = _passwordController.text.trim();
+            if(username.isEmpty || password.isEmpty) return;
+
+            widget.onLogin(username,password);
+          },
+          child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
+          style: ElevatedButton.styleFrom(
+            primary: MyColor.signInButton,
+          ),
+        );
+    }
   }
 }

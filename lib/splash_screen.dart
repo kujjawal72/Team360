@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:team360/login/login.dart';
+import 'package:team360/util/profile_manager.dart';
+
+import 'main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -18,7 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _makeDelay() async{
     await Future.delayed(const Duration(milliseconds: 2000),(){});
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+    final userId = await ProfileManager.getUserId();
+    if(userId == 0){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+    }else{
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+    }
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:team360/home/components/attendance_dialog.dart';
 import 'package:team360/home/components/dashboard_card.dart';
 import 'package:team360/home/components/home_clock.dart';
 import 'package:team360/home/components/task_list_card.dart';
+import 'package:team360/util/profile_manager.dart';
 
 import 'dashboard_three_card.dart';
 
@@ -16,9 +17,23 @@ class Body extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return ListView(
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(bottom: 15.0),
-          child: Text("Good Afternoon\nMr. Ujjawal Dubey\nLoging Time : 10.00AM",textAlign: TextAlign.center,style: TextStyle(fontSize: 18),),
+          child: FutureBuilder<String>(
+            future: ProfileManager.getName(),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return const Text("Good Afternoon\n\nLogging Time : 10.00AM",textAlign: TextAlign.center,style: TextStyle(fontSize: 18),);
+                default:
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Text("Good Afternoon\n${snapshot.data}\nLoging Time : 10.00AM",textAlign: TextAlign.center,style: const TextStyle(fontSize: 18),);
+                  }
+              }
+            },
+          ),
         ),
         GestureDetector(child: MyClock(width: size.width*0.2,height: size.height*0.2,),onTap: (){
           AttendanceDialog.show(context);

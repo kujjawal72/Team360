@@ -1,6 +1,9 @@
-
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:team360/login/components/body.dart';
+import 'package:team360/login/model/models.dart';
+import 'package:team360/login/viewmodel/login_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,9 +15,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+
+    return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Body(),
+      body: Body(onLogin: (username,password) {
+        Provider.of<LoginViewModel>(context,listen: false).doLogin(LoginRequestModel(phoneno: username, password: password));
+      },),
     );
   }
 }
