@@ -1,3 +1,4 @@
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:team360/base/response.dart';
@@ -123,6 +124,7 @@ class _BodyState extends State<Body> {
 
   getSigninWidget() {
     Response response = Provider.of<LoginViewModel>(context).loginResponse;
+    Fimber.i("response ${response.status}");
     switch(response.status){
 
       case Status.ERROR:

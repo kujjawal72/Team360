@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:team360/util/my_colors.dart';
 
 class DashboardCard extends StatelessWidget {
-  const DashboardCard({Key? key}) : super(key: key);
+  final String dailyRunRate;
+  final String askingRunRate;
+  const DashboardCard({Key? key,required this.dailyRunRate,required this.askingRunRate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +39,9 @@ class DashboardCard extends StatelessWidget {
               child: buildTextInsideCard(
                   "Daily Run Rate",
                   const Icon(Icons.attach_money),
-                  const Text(
-                    "50000.00",
-                    style: TextStyle(fontSize: 20),
+                  Text(
+                    dailyRunRate,
+                    style: const TextStyle(fontSize: 20),
                   )),
             ),
             flex: 1,
@@ -54,9 +56,9 @@ class DashboardCard extends StatelessWidget {
               child: buildTextInsideCard(
                   "Asking Run Rate",
                   const Icon(Icons.attach_money),
-                  const Text(
-                    "1666.00",
-                    style: TextStyle(fontSize: 20),
+                  Text(
+                    askingRunRate,
+                    style: const TextStyle(fontSize: 20),
                   )),
             ),
             flex: 1,

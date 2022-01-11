@@ -1,11 +1,12 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:team360/home/components/backgound.dart';
 import 'package:team360/home/home.dart';
+import 'package:team360/home/viewmodel/home_viewmodel.dart';
 import 'package:team360/login/viewmodel/login_viewmodel.dart';
-import 'package:team360/retailer/onboard/onboard_retailer.dart';
 import 'package:team360/retailer/retailer_list.dart';
 import 'package:team360/splash_screen.dart';
 import 'package:team360/task_list/task_calendar.dart';
@@ -16,7 +17,7 @@ import 'package:team360/util/profile_manager.dart';
 
 void main() {
   Fimber.plantTree(DebugTree());
-  runApp(const MyApp());
+  runApp(Phoenix(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: LoginViewModel())
+        ChangeNotifierProvider.value(value: LoginViewModel()),
+        ChangeNotifierProvider.value(value: HomeViewModel())
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+//ChangeNotifierProvider.value(value: LoginViewModel())
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -124,20 +126,17 @@ class _MainPageState extends State<MainPage> {
             createDrawerBodyItem(
                 icon: Icons.location_on, text: "Contact us", onTap: () {}),
             createDrawerBodyItem(
-                icon: Icons.logout, text: "Sign out", onTap: () async {
+                icon: Icons.logout,
+                text: "Sign out",
+                onTap: () async {
                   final x = await ProfileManager.logout();
-                  if(x){
-                    Navigator.pushAndRemoveUntil<dynamic>(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (BuildContext context) => const SplashScreen(),
-                      ),
-                          (route) => false,//if you want to disable back feature set to false
-                    );
-                  }else{
+                  Fimber.i("x = $x");
+                  if (x) {
+                    Phoenix.rebirth(context);
+                  } else {
                     //todo
                   }
-            }),
+                }),
             const Padding(
               padding: EdgeInsets.all(18.0),
               child: Align(

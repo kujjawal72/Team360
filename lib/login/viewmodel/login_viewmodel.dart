@@ -27,5 +27,10 @@ class LoginViewModel with ChangeNotifier{
     }
     notifyListeners();
   }
+  @override
+  void dispose() {
+    _loginResponse = Response.initial("Disposing");
+    super.dispose();
+  }
 
 }

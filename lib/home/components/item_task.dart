@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:team360/home/model/models.dart';
+import 'package:team360/home/model/model2.dart';
 
 class ItemTask extends StatefulWidget {
-  final TaskList data;
-
-  const ItemTask({Key? key, required this.data}) : super(key: key);
+  final ResponseList data;
+  const ItemTask({Key? key, required this.data, }) : super(key: key);
 
   @override
   _ItemTaskState createState() => _ItemTaskState();
@@ -30,7 +29,7 @@ class _ItemTaskState extends State<ItemTask> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Flexible(
-                    child: Text(widget.data.name,style: TextStyle(fontSize: 18),),
+                    child: Text(widget.data.taskType,style: const TextStyle(fontSize: 18),),
                     flex: 7,
                     fit: FlexFit.tight,
                   ),
@@ -54,7 +53,7 @@ class _ItemTaskState extends State<ItemTask> {
                                     borderRadius: BorderRadius.circular(29),
                                   ),
                                   child: Text(
-                                    "${widget.data.completedTask}",
+                                    "${widget.data.completedCount}",
                                     style: const TextStyle(fontSize: 12),
                                   )),
                               Container(
@@ -64,7 +63,7 @@ class _ItemTaskState extends State<ItemTask> {
                                     borderRadius: BorderRadius.circular(29),
                                   ),
                                   child: Text(
-                                    "${widget.data.subTasks.length}",
+                                    "${widget.data.tasks.length}",
                                     style: const TextStyle(fontSize: 12),
                                   )),
                             ],
@@ -89,12 +88,12 @@ class _ItemTaskState extends State<ItemTask> {
               ? ListView.builder(
                   itemBuilder: (context, index) {
                     return CheckboxListTile(
-                        value: widget.data.subTasks[index].isCompleted,
+                        value: widget.data.tasks[index].isComplete == "Y",
                         title: Text(
-                          widget.data.subTasks[index].name,
+                          widget.data.tasks[index].taskName,
                           style: TextStyle(
                             fontSize: 16,
-                            decoration: widget.data.subTasks[index].isCompleted
+                            decoration: widget.data.tasks[index].isComplete == "Y"
                                 ? TextDecoration.lineThrough
                                 : null,
                             decorationStyle: TextDecorationStyle.solid,
@@ -104,14 +103,14 @@ class _ItemTaskState extends State<ItemTask> {
                         dense: true,
                         onChanged: (newVal) {
                           setState(() {
-                            widget.data.subTasks[index].isCompleted = newVal!;
+                            widget.data.tasks[index].isComplete = newVal??false ? "Y" : "N";
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading);
                   },
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
-                  itemCount: widget.data.subTasks.length,
+                  itemCount: widget.data.tasks.length,
                 )
               : const Padding(padding: EdgeInsets.all(2))
         ],

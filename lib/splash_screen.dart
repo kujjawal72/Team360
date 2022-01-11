@@ -1,3 +1,4 @@
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:team360/login/login.dart';
 import 'package:team360/util/profile_manager.dart';
@@ -22,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   _makeDelay() async{
     await Future.delayed(const Duration(milliseconds: 2000),(){});
     final userId = await ProfileManager.getUserId();
+    Fimber.i("userId $userId");
     if(userId == 0){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     }else{
