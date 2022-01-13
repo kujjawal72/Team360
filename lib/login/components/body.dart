@@ -1,5 +1,6 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:team360/base/response.dart';
 import 'package:team360/home/home.dart';
@@ -128,6 +129,7 @@ class _BodyState extends State<Body> {
     switch(response.status){
 
       case Status.ERROR:
+        Fluttertoast.showToast(msg: "Failed to sign-in");
         return ElevatedButton(
           onPressed: (){
             final username = _usernameController.text.trim();
@@ -164,6 +166,8 @@ class _BodyState extends State<Body> {
           WidgetsBinding.instance!.addPostFrameCallback((_){
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
           });
+        }else{
+          Fluttertoast.showToast(msg: "Failed to sign in");
         }
         return ElevatedButton(
           onPressed: (){

@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 
 class EditBoxWhiteRounded extends StatefulWidget {
   String hint;
-  String preText;
   EdgeInsetsGeometry padding;
   EdgeInsetsGeometry margin;
   Color boxColor;
-  ValueChanged<String>? onChanged;
+  TextEditingController? controller;
+
 
   EditBoxWhiteRounded(
       {Key? key,
       this.hint = "",
-      this.preText = "Ujjawal",
       this.padding = const EdgeInsets.only(left: 15, right: 10, top: 2, bottom: 2),
       this.margin = const EdgeInsets.only(left: 3,right: 5,top: 2,bottom: 2),
       this.boxColor = Colors.white,
-      this.onChanged})
+      this.controller})
       : super(key: key);
 
   @override
@@ -50,7 +49,7 @@ class _EditBoxWhiteRoundedState extends State<EditBoxWhiteRounded> {
         style: const TextStyle(fontSize: 18),
         obscureText: false,
         autofocus: false,
-        onChanged: widget.onChanged,
+        controller: widget.controller,
       ),
     );
   }

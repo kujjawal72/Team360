@@ -1,4 +1,5 @@
 
+import 'package:team360/base/file_upload_response.dart';
 import 'package:team360/home/model/home_services.dart';
 import 'package:team360/home/model/models.dart';
 import 'package:team360/retailer/model/models.dart';
@@ -20,5 +21,9 @@ class HomeRepository {
 
   Future<SalesmanTaskByDateResponse> getSalesmanTaskByDateAndUserId(int userId,String date) async{
     return SalesmanTaskByDateResponse.fromJson(await _homeService.getSalesmanTaskByDateAndUserId(userId, date));
+  }
+
+  Future<FileUploadResponse> uploadImageFile(int userId,String filePath) async{
+    return FileUploadResponse.fromJson(await _homeService.uploadImage(userId, filePath));
   }
 }
