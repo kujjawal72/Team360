@@ -1,23 +1,24 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:team360/home/components/backgound.dart';
 import 'package:team360/home/home.dart';
 import 'package:team360/home/viewmodel/home_viewmodel.dart';
-import 'package:team360/login/viewmodel/login_viewmodel.dart';
 import 'package:team360/retailer/retailer_list.dart';
 import 'package:team360/splash_screen.dart';
 import 'package:team360/task_list/task_calendar.dart';
 import 'package:team360/task_list/task_list.dart';
-import 'package:team360/touchbase/touchbase_dashboard.dart';
+import 'package:team360/task_list/viewmodel/task_viewmodel.dart';
 import 'package:team360/util/my_colors.dart';
 import 'package:team360/util/profile_manager.dart';
 
+import 'learning.dart';
+import 'login/login.dart';
+
 void main() {
   Fimber.plantTree(DebugTree());
-  runApp(Phoenix(child: const MyApp()));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,18 +26,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: LoginViewModel()),
-        ChangeNotifierProvider.value(value: HomeViewModel())
-      ],
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Team 360",
-        color: MyColor.appBackgroundColor,
-        home: SplashScreen(),
-      ),
+    return FutureBuilder(
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => HomeViewModel())
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: "Team 360",
+            color: MyColor.appBackgroundColor,
+            home: snapshot.data,
+          ),
+        );
+      },
+      future: getUserScreen(),
     );
+  }
+
+  Future<Widget> getUserScreen() async {
+    final userId = await ProfileManager.getUserId();
+    if(userId == 0){
+      return const LoginScreen();
+    }else{
+      return const MainPage();
+    }
   }
 }
 //ChangeNotifierProvider.value(value: LoginViewModel())
@@ -56,8 +70,8 @@ class _MainPageState extends State<MainPage> {
   final nav_screens = [
     const HomeScreen(),
     const RetailerListScreen(),
-    const TouchBaseDashboardScreen(),
-    const TaskListScreen()
+    //const LearningScreen(),
+    ChangeNotifierProvider<TaskViewModel>(create: (_)=>TaskViewModel(),child: const TaskListScreen(),)
   ];
 
   @override
@@ -77,7 +91,7 @@ class _MainPageState extends State<MainPage> {
             _scaffoldKey.currentState!.openDrawer();
           },
         ),
-        actions: _currentIndex == 3
+        actions: _currentIndex == 2
             ? ([
                 IconButton(
                     onPressed: () {
@@ -85,11 +99,11 @@ class _MainPageState extends State<MainPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => TaskCalendarScreen()),
-                        );
+                              builder: (_) => ChangeNotifierProvider<TaskViewModel>(create: (_)=>TaskViewModel(),child: const TaskCalendarScreen(),)),
+                        ).then((value) => setState(() {}));
                       });
                     },
-                    icon: Icon(Icons.calendar_view_month_rounded))
+                    icon: const Icon(Icons.calendar_view_month_rounded))
               ])
             : null,
       ),
@@ -108,9 +122,12 @@ class _MainPageState extends State<MainPage> {
                         backgroundImage:
                             Image.asset("assets/images/ujjawal.jpg").image),
                   ),
-                  const Text(
-                    "Ujjawal Dubey",
-                    style: TextStyle(fontSize: 18.0),
+                  FutureBuilder(
+                    future: getName(),
+                    builder: (context,snapshot)=>Text(
+                      snapshot.data as String,
+                      style: const TextStyle(fontSize: 18.0),
+                    ),
                   )
                 ],
               ),
@@ -132,7 +149,9 @@ class _MainPageState extends State<MainPage> {
                   final x = await ProfileManager.logout();
                   Fimber.i("x = $x");
                   if (x) {
-                    Phoenix.rebirth(context);
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (c) => const LoginScreen()),
+                            (route) => false);
                   } else {
                     //todo
                   }
@@ -161,8 +180,6 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(Icons.local_convenience_store_rounded),
               label: "Retailer"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.mode_edit), label: "Retailer Onboard"),
-          BottomNavigationBarItem(
               icon: Icon(Icons.view_list), label: "Task List"),
         ],
         selectedItemColor: Colors.black,
@@ -179,9 +196,6 @@ class _MainPageState extends State<MainPage> {
               pageTitle = "Retailer";
               break;
             case 2:
-              pageTitle = "Retailer Onboard";
-              break;
-            case 3:
               pageTitle = "Task List";
               break;
           }
@@ -189,6 +203,10 @@ class _MainPageState extends State<MainPage> {
         }),
       ),
     ));
+  }
+
+  Future<String> getName()async {
+    return await ProfileManager.getName();
   }
 }
 

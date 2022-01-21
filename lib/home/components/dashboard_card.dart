@@ -38,7 +38,11 @@ class DashboardCard extends StatelessWidget {
               ),
               child: buildTextInsideCard(
                   "Daily Run Rate",
-                  const Icon(Icons.attach_money),
+                  Image.asset(
+                    "assets/icons/rupee.png",
+                    width: 25,
+                    height: 25,
+                  ),
                   Text(
                     dailyRunRate,
                     style: const TextStyle(fontSize: 20),
@@ -55,7 +59,11 @@ class DashboardCard extends StatelessWidget {
               ),
               child: buildTextInsideCard(
                   "Asking Run Rate",
-                  const Icon(Icons.attach_money),
+                  Image.asset(
+                    "assets/icons/rupee.png",
+                    width: 25,
+                    height: 25,
+                  ),
                   Text(
                     askingRunRate,
                     style: const TextStyle(fontSize: 20),
@@ -69,7 +77,7 @@ class DashboardCard extends StatelessWidget {
   }
 }
 
-Widget? buildTextInsideCard(String header, Icon icon, Widget label) {
+Widget? buildTextInsideCard(String header, Image icon, Widget label) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -78,6 +86,7 @@ Widget? buildTextInsideCard(String header, Icon icon, Widget label) {
         style: const TextStyle(fontSize: 14),
       ),
       Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [icon, label],
       )
     ],

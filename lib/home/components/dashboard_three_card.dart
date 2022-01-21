@@ -78,7 +78,7 @@ class DashboardCardWithThreeCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(29),
                 ),
                 child: buildTextInsideCard("Conversion %",
-                    '${((num.tryParse(activeAccount) ?? 0) / (num.tryParse(totalAccounts) ?? 1))*100}%')),
+                    '${(((num.tryParse(activeAccount) ?? 0) / (num.tryParse(totalAccounts) ?? 1))*100).toStringAsFixed(1)}%')),
             flex: 1,
           )
         ],

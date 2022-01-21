@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:team360/base/response.dart';
 import 'package:team360/home/components/item_task.dart';
-import 'package:team360/home/model/model2.dart';
-import 'package:team360/home/model/models.dart';
+import 'package:team360/home/model/salesman_task_by_date_model.dart';
+import 'package:team360/home/model/salesman_dashboard_model.dart';
 import 'package:team360/home/viewmodel/home_viewmodel.dart';
 
 import '../../util/my_colors.dart';
@@ -53,6 +53,6 @@ class TaskListCard extends StatelessWidget {
       case Status.ERROR:
         break;
     }
-    return Padding(padding: EdgeInsets.all(5));
+    return const Padding(padding: EdgeInsets.all(5));
   }
 }

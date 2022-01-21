@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:team360/util/my_colors.dart';
+import 'package:team360/util/progress_dialog.dart';
 
 class CheckoutFeedbackDialog {
   static void show(BuildContext context) {
@@ -24,7 +25,7 @@ class CheckoutFeedbackDialog {
               textAlign: TextAlign.center,
             ),
             Container(
-              margin: EdgeInsets.only(top: 10, left: 5, right: 5),
+              margin: const EdgeInsets.only(top: 10, left: 5, right: 5),
               child: TextFormField(
                 minLines: 10,
                 maxLines: 15,
@@ -38,29 +39,34 @@ class CheckoutFeedbackDialog {
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(14),
-              margin: EdgeInsets.only(
-                  top: 10,
-                  bottom: 10,
-                  left: size.width * 0.1,
-                  right: size.width * 0.1),
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                  color: Color(0xFF3c3c3c),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                        blurRadius: 2.0,
-                        color: Colors.white,
-                        offset: Offset(2.0, 2.0))
-                  ]),
-              child: const Text(
-                "Submit",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.white),
+            InkWell(
+              onTap: (){
+                checkOut(context);
+              },
+              child: Container(
+                padding: EdgeInsets.all(14),
+                margin: EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                    left: size.width * 0.1,
+                    right: size.width * 0.1),
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                    color: Color(0xFF3c3c3c),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                          blurRadius: 2.0,
+                          color: Colors.white,
+                          offset: Offset(2.0, 2.0))
+                    ]),
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white),
+                ),
               ),
             )
           ],
@@ -71,5 +77,12 @@ class CheckoutFeedbackDialog {
     );
 
     showDialog(context: context, builder: (_) => dialog);
+  }
+
+  static Future<void> checkOut(BuildContext context)async {
+    ProgressDialog.show(context);
+    await Future.delayed(Duration(seconds: 2));
+    Navigator.of(context)
+      ..pop()..pop()..pop()..pop();
   }
 }

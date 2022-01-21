@@ -6,6 +6,8 @@ class EditBoxWhiteRounded extends StatefulWidget {
   EdgeInsetsGeometry margin;
   Color boxColor;
   TextEditingController? controller;
+  TextInputType? keyboardType;
+  int? maxLength;
 
 
   EditBoxWhiteRounded(
@@ -14,7 +16,9 @@ class EditBoxWhiteRounded extends StatefulWidget {
       this.padding = const EdgeInsets.only(left: 15, right: 10, top: 2, bottom: 2),
       this.margin = const EdgeInsets.only(left: 3,right: 5,top: 2,bottom: 2),
       this.boxColor = Colors.white,
-      this.controller})
+      this.controller,
+      this.keyboardType,
+      this.maxLength})
       : super(key: key);
 
   @override
@@ -45,11 +49,14 @@ class _EditBoxWhiteRoundedState extends State<EditBoxWhiteRounded> {
           enabledBorder: InputBorder.none,
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
+          counterText: "",
         ),
         style: const TextStyle(fontSize: 18),
         obscureText: false,
         autofocus: false,
         controller: widget.controller,
+        keyboardType: widget.keyboardType,
+        maxLength: widget.maxLength,
       ),
     );
   }

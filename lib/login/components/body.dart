@@ -13,8 +13,7 @@ import 'package:team360/util/profile_manager.dart';
 import 'package:team360/util/utils.dart';
 
 class Body extends StatefulWidget {
-  final String2VoidCallback onLogin;
-  const Body({Key? key,required this.onLogin}) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   State<Body> createState() => _BodyState();
@@ -62,6 +61,7 @@ class _BodyState extends State<Body> {
               obscureText: false,
               autofocus: false,
               controller: _usernameController,
+              textInputAction: TextInputAction.next,
             ),
           ),
           Container(
@@ -73,6 +73,10 @@ class _BodyState extends State<Body> {
               obscureText: true,
               autofocus: false,
               controller: _passwordController,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (data){
+                callOnLogin();
+              },
             ),
           ),
           SizedBox(
@@ -132,11 +136,7 @@ class _BodyState extends State<Body> {
         Fluttertoast.showToast(msg: "Failed to sign-in");
         return ElevatedButton(
           onPressed: (){
-            final username = _usernameController.text.trim();
-            final password = _passwordController.text.trim();
-            if(username.isEmpty || password.isEmpty) return;
-
-            widget.onLogin(username,password);
+            callOnLogin();
           },
           child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
           style: ElevatedButton.styleFrom(
@@ -146,11 +146,7 @@ class _BodyState extends State<Body> {
       case Status.INITIAL:
         return ElevatedButton(
           onPressed: (){
-            final username = _usernameController.text.trim();
-            final password = _passwordController.text.trim();
-            if(username.isEmpty || password.isEmpty) return;
-
-            widget.onLogin(username,password);
+            callOnLogin();
           },
           child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
           style: ElevatedButton.styleFrom(
@@ -171,11 +167,7 @@ class _BodyState extends State<Body> {
         }
         return ElevatedButton(
           onPressed: (){
-            final username = _usernameController.text.trim();
-            final password = _passwordController.text.trim();
-            if(username.isEmpty || password.isEmpty) return;
-
-            widget.onLogin(username,password);
+            callOnLogin();
           },
           child: const Text("SIGN IN", style: TextStyle(fontSize: 15)),
           style: ElevatedButton.styleFrom(
@@ -183,5 +175,14 @@ class _BodyState extends State<Body> {
           ),
         );
     }
+  }
+
+  void callOnLogin() {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+    if(username.isEmpty || password.isEmpty) return;
+
+    Provider.of<LoginViewModel>(context, listen: false).doLogin(
+        LoginRequestModel(phoneno: username, password: password));
   }
 }

@@ -1,9 +1,19 @@
+import 'dart:convert';
+
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
-import 'package:team360/home/model/model2.dart';
+import 'package:http/http.dart' as http;
+import 'package:team360/home/model/salesman_task_by_date_model.dart';
+import 'package:team360/touchbase/model/complete_task_request.dart';
+import 'package:team360/util/utils.dart';
 
 class ItemTask extends StatefulWidget {
   final ResponseList data;
-  const ItemTask({Key? key, required this.data, }) : super(key: key);
+
+  const ItemTask({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
 
   @override
   _ItemTaskState createState() => _ItemTaskState();
@@ -29,7 +39,10 @@ class _ItemTaskState extends State<ItemTask> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Flexible(
-                    child: Text(widget.data.taskType,style: const TextStyle(fontSize: 18),),
+                    child: Text(
+                      widget.data.taskType,
+                      style: const TextStyle(fontSize: 18),
+                    ),
                     flex: 7,
                     fit: FlexFit.tight,
                   ),
@@ -93,9 +106,10 @@ class _ItemTaskState extends State<ItemTask> {
                           widget.data.tasks[index].taskName,
                           style: TextStyle(
                             fontSize: 16,
-                            decoration: widget.data.tasks[index].isComplete == "Y"
-                                ? TextDecoration.lineThrough
-                                : null,
+                            decoration:
+                                widget.data.tasks[index].isComplete == "Y"
+                                    ? TextDecoration.lineThrough
+                                    : null,
                             decorationStyle: TextDecorationStyle.solid,
                           ),
                         ),
@@ -103,7 +117,17 @@ class _ItemTaskState extends State<ItemTask> {
                         dense: true,
                         onChanged: (newVal) {
                           setState(() {
-                            widget.data.tasks[index].isComplete = newVal??false ? "Y" : "N";
+                            widget.data.tasks[index].isComplete = newVal ?? false ? "Y" : "N";
+                            final body = CompleteTaskRequest();
+                            if(newVal??false){
+                              widget.data.completedCount++;
+                              body.isComplte = 1;
+                            }else{
+                              widget.data.completedCount--;
+                              body.isComplte = 0;
+                            }
+                            callCompleteApi(body,widget.data.tasks[index].salesman_task_id);
+
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading);
@@ -116,5 +140,13 @@ class _ItemTaskState extends State<ItemTask> {
         ],
       ),
     );
+  }
+
+  Future<void> callCompleteApi(CompleteTaskRequest body,int taskId)async {
+    Fimber.i("$taskId --${body.toJson()}");
+    final completeTask = await returnResponse(await http.put(Uri.parse(
+        baseUrl + "bakes_and_cakes/BakesAndCakes/updateTask/$taskId"),
+        headers: headers, body: jsonEncode(body)));
+    Fimber.i("$completeTask");
   }
 }

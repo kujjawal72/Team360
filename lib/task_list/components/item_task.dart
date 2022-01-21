@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:team360/home/model/models.dart';
+import 'package:team360/task_list/model/model1.dart';
 
 class ItemTask extends StatefulWidget {
-  const ItemTask({Key? key, required this.data}) : super(key: key);
-  final TaskList data;
+  const ItemTask({Key? key,required this.data }) : super(key: key);
+  final ResponseList data;
 
   @override
   State<ItemTask> createState() => _ItemTaskState();
@@ -22,7 +22,7 @@ class _ItemTaskState extends State<ItemTask> {
             child: Padding(
               padding: const EdgeInsets.only(top: 10,bottom: 10),
               child: Text(
-                widget.data.name,
+                widget.data.taskType,
                 style: const TextStyle(fontSize: 18),
               ),
             ),
@@ -34,14 +34,14 @@ class _ItemTaskState extends State<ItemTask> {
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                margin: EdgeInsets.only(left: 10, top: 2, bottom: 2),
+                margin: const EdgeInsets.only(left: 10, top: 2, bottom: 2),
                 child: CheckboxListTile(
-                    value: widget.data.subTasks[index].isCompleted,
+                    value: widget.data.tasks[index].isComplete == "Y",
                     title: Text(
-                      widget.data.subTasks[index].name,
+                      widget.data.tasks[index].taskName,
                       style: TextStyle(
                         fontSize: 16,
-                        decoration: widget.data.subTasks[index].isCompleted
+                        decoration: widget.data.tasks[index].isComplete == "Y"
                             ? TextDecoration.lineThrough
                             : null,
                         decorationStyle: TextDecorationStyle.solid,
@@ -51,7 +51,7 @@ class _ItemTaskState extends State<ItemTask> {
                     dense: true,
                     onChanged: (newVal) {
                       setState(() {
-                        widget.data.subTasks[index].isCompleted = newVal!;
+                        widget.data.tasks[index].isComplete = newVal??false ? "Y" : "N";
                       });
                     },
                     controlAffinity: ListTileControlAffinity.leading),
@@ -59,7 +59,7 @@ class _ItemTaskState extends State<ItemTask> {
             },
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
-            itemCount: widget.data.subTasks.length,
+            itemCount: widget.data.tasks.length,
           )
         ],
       ),

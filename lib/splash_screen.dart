@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _makeDelay() async{
-    await Future.delayed(const Duration(milliseconds: 2000),(){});
+    await Future.delayed(const Duration(milliseconds: 200),(){});
     final userId = await ProfileManager.getUserId();
     Fimber.i("userId $userId");
     if(userId == 0){

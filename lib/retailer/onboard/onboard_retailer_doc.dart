@@ -1,12 +1,17 @@
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:team360/home/components/backgound.dart';
 import 'package:team360/retailer/onboard/components/doc_body.dart';
 
+import 'model.dart';
+
 class OnBoardRetailerDoc extends StatelessWidget {
-  const OnBoardRetailerDoc({Key? key}) : super(key: key);
+  final AddRetailerRequest request;
+  const OnBoardRetailerDoc({Key? key, required this.request}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Fimber.i("$request");
     return Background(
       child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -20,7 +25,7 @@ class OnBoardRetailerDoc extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
-          body: DocBody()),
+          body: DocBody(request: request,)),
     );
   }
 }

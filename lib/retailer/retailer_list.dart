@@ -1,4 +1,5 @@
 
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:team360/home/viewmodel/home_viewmodel.dart';
@@ -13,9 +14,9 @@ class RetailerListScreen extends StatelessWidget {
     Provider.of<HomeViewModel>(context,listen: false).getRetailerListBySalesman();
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Body(),
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.add),onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => OnBoardRetailerScreen()));
+      body: const Body(),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.add),onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const OnBoardRetailerScreen()));
       },tooltip: "Onboard Retailer",),
     );
   }

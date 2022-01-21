@@ -16,7 +16,6 @@ class LoginService{
     dynamic loginResponse;
     try{
       final json = request.toJson();
-      Fimber.d("$json");
       final response = await http.post(Uri.parse(baseUrl+loginRequestUrl),body: jsonEncode(json),headers: headers);
       loginResponse = returnResponse(response);
     }on SocketException {

@@ -1,12 +1,12 @@
-class SalesmanTaskByDateResponse {
-  SalesmanTaskByDateResponse({
+class SalesmanTaskTypeListResponse {
+  SalesmanTaskTypeListResponse({
     required this.attributes,
     required this.responseList,
   });
   late final Attributes attributes;
   late final List<ResponseList> responseList;
 
-  SalesmanTaskByDateResponse.fromJson(Map<String, dynamic> json){
+  SalesmanTaskTypeListResponse.fromJson(Map<String, dynamic> json){
     attributes = Attributes.fromJson(json['attributes']);
     responseList = List.from(json['responseList']).map((e)=>ResponseList.fromJson(e)).toList();
   }
@@ -79,12 +79,14 @@ class ResponseList {
 
 class Tasks {
   Tasks({
+    required this.salesmanTaskId,
     required this.taskName,
     required this.isComplete,
     required this.assignDate,
     required this.dueDate,
     required this.taskTime,
   });
+  late final int salesmanTaskId;
   late final String taskName;
   String isComplete = "N";
   late final String assignDate;
@@ -92,6 +94,7 @@ class Tasks {
   late final String taskTime;
 
   Tasks.fromJson(Map<String, dynamic> json){
+    salesmanTaskId = json['salesman_task_id'];
     taskName = json['task_name'];
     isComplete = json['is_complete'];
     assignDate = json['assign_date'];
@@ -101,6 +104,7 @@ class Tasks {
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
+    _data['salesman_task_id'] = salesmanTaskId;
     _data['task_name'] = taskName;
     _data['is_complete'] = isComplete;
     _data['assign_date'] = assignDate;
