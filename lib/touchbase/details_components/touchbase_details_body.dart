@@ -22,8 +22,9 @@ import 'package:team360/util/utils.dart';
 import 'package:intl/intl.dart';
 
 class TouchbaseDetailsBoody extends StatefulWidget {
-  const TouchbaseDetailsBoody({Key? key, required this.retailerId}) : super(key: key);
+  const TouchbaseDetailsBoody({Key? key, required this.retailerId, required this.touchbaseId}) : super(key: key);
   final int retailerId;
+  final int touchbaseId;
   @override
   State<TouchbaseDetailsBoody> createState() => _TouchbaseDetailsBoodyState();
 }
@@ -82,36 +83,6 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
         Fimber.i("${data.salesmanTouchbaseId} ${data.retailerId}");
         return ListView(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(
-                      top: 5, bottom: 5, left: 20, right: 20),
-                ),
-                const Text(
-                  "Touchbase",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(
-                      top: 5, bottom: 5, left: 20, right: 20),
-                  decoration: const BoxDecoration(
-                      color: Color(0xFFff0000),
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 1.0,
-                          spreadRadius: 0.0,
-                          offset:
-                          Offset(2.0, 2.0), // shadow direction: bottom right
-                        )
-                      ]),
-                  child: const TimerWidget(),
-                )
-              ],
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -319,8 +290,8 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
                   ),
                 ),
                 InkWell(
-                  onTap: (){
-                    Navigator.push(
+                  onTap: () async {
+                    final res = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
@@ -328,6 +299,11 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
                                   create: (_) => TouchBaseViewModel(),
                                   child: OrderHistoryScreen(retailerId: widget.retailerId),
                                 )));
+                    Provider.of<HomeViewModel>(context, listen: false)
+                        .getTouchbaseDetailsFunc(widget.retailerId, widget.touchbaseId);
+                    setState(() {
+
+                    });
                   },
                   child: DetailsInfoCard(
                     header: "Order History",

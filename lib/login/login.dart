@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LoginViewModel>(
       create: (_)=>LoginViewModel(),
-      child: Scaffold(
+      child: const Scaffold(
         resizeToAvoidBottomInset: true,
         body: Body(),
       ),

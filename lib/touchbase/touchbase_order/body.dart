@@ -27,6 +27,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   final _productCountCont = TextEditingController();
   final _salesAmountCont = TextEditingController();
+  final _updateQtyController = TextEditingController();
 
   final productsForOrder = List<iplr.ResponseList>.empty(growable: true);
 
@@ -41,6 +42,7 @@ class _BodyState extends State<Body> {
   void dispose() {
     _productCountCont.dispose();
     _salesAmountCont.dispose();
+    _updateQtyController.dispose();
     super.dispose();
   }
 
@@ -204,18 +206,28 @@ class _BodyState extends State<Body> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Align(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8.0, bottom: 8),
-                    child: Text(
-                      "Qty: 1",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0,),
+                      child: Text(
+                        "Qty: ${productsForOrder[i].buyingQty}",
+                        style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  alignment: Alignment.centerLeft,
+                    TextButton.icon(onPressed: () async {
+                      final res = await openDialog(element.productName,element.buyingQty);
+                      if(res != null && (res as String).isNotEmpty){
+                        setState(() {
+                          element.buyingQty = int.parse(res);
+                          calculateNumberAndSaleAmount();
+                        });
+                      }
+                    }, label: const Text("Change"),icon: const Icon(Icons.edit,size: 20,))
+                  ],
                 ),
                 TextButton.icon(
                   onPressed: () {
@@ -226,7 +238,7 @@ class _BodyState extends State<Body> {
                   },
                   label: const Text("Remove",
                       style: TextStyle(color: Colors.redAccent)),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.remove,
                     color: Colors.red,
                     size: 18,
@@ -248,8 +260,7 @@ class _BodyState extends State<Body> {
     int count = 0;
     double amount = 0.0;
     for (var element in productsForOrder) {
-      amount += element.outPrice;
-      ;
+      amount += (element.outPrice*element.buyingQty);
       count++;
     }
     _productCountCont.text = "$count";
@@ -263,9 +274,10 @@ class _BodyState extends State<Body> {
         retailerId: widget.retailerId,
         salesAmount: _salesAmountCont.text,
         products: productsForOrder
-            .map((e) => Products(qty: 1, productId: e.productId))
+            .map((e) => Products(qty: e.buyingQty, productId: e.productId))
             .toList(),
         salesmanId: userId);
+    Fimber.i("${request.toJson()}");
     try {
       final createOrder = await returnResponse(await http.post(
           Uri.parse(baseUrl +
@@ -283,5 +295,30 @@ class _BodyState extends State<Body> {
       Fimber.i("$e");
     }
     Navigator.pop(context);
+  }
+
+  Future<dynamic> openDialog(String productName, int buyingQty) async {
+    _updateQtyController.text = "$buyingQty";
+    return showDialog(context: context, builder: (context)=>AlertDialog(
+      title: Text(productName),backgroundColor: Colors.white,
+      content: TextField(
+        controller: _updateQtyController,keyboardType: const TextInputType.numberWithOptions(),
+        textInputAction: TextInputAction.done,autofocus: true,onSubmitted: (newVal){
+        _updateQtyController.clear();
+        Navigator.pop(context,newVal);
+      },
+      ),
+      actions: [
+        TextButton(onPressed: (){
+          _updateQtyController.clear();
+          Navigator.pop(context);
+        }, child: const Text("CANCEL",style: TextStyle(color: Colors.grey),)),
+        TextButton(onPressed: (){
+          final newVal = _updateQtyController.text;
+          _updateQtyController.clear();
+          Navigator.pop(context,newVal);
+        }, child: const Text("UPDATE",style: TextStyle(color: Colors.blue),)),
+      ],
+    ));
   }
 }

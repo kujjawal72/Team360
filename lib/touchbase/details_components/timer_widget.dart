@@ -27,7 +27,9 @@ class _TimerWidgetState extends State<TimerWidget> {
   @override
   void initState() {
     super.initState();
-    startTimer();
+    if(_timer == null){
+      startTimer();
+    }
   }
 
   @override

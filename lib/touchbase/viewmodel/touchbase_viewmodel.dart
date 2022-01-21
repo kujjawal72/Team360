@@ -60,6 +60,7 @@ class TouchBaseViewModel extends ChangeNotifier{
   Response get getOrderList => _getOrderList;
   Future<void> getOrderListFunc(int retId) async{
       try{
+        Fimber.i("66629687563765");
         final userId = await ProfileManager.getUserId();
         OrderHistoryResponse data = await repo.getOrderHistory(retId, userId);
         _getOrderList = Response.completed(data);

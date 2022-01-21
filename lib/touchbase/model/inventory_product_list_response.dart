@@ -59,6 +59,7 @@ class ResponseList {
   late final int lastUpdateId;
   late final String lastUpdateTs;
   late final int qty;
+  int buyingQty = 1;
 
   ResponseList.fromJson(Map<String, dynamic> json){
     productId = json['product_id'];

@@ -6,14 +6,12 @@ import 'package:team360/home/components/backgound.dart';
 import 'package:team360/home/home.dart';
 import 'package:team360/home/viewmodel/home_viewmodel.dart';
 import 'package:team360/retailer/retailer_list.dart';
-import 'package:team360/splash_screen.dart';
 import 'package:team360/task_list/task_calendar.dart';
 import 'package:team360/task_list/task_list.dart';
 import 'package:team360/task_list/viewmodel/task_viewmodel.dart';
 import 'package:team360/util/my_colors.dart';
 import 'package:team360/util/profile_manager.dart';
 
-import 'learning.dart';
 import 'login/login.dart';
 
 void main() {
@@ -28,16 +26,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => HomeViewModel())
-          ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: "Team 360",
-            color: MyColor.appBackgroundColor,
-            home: snapshot.data,
-          ),
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "Team 360",
+          color: MyColor.appBackgroundColor,
+          home: snapshot.data,
         );
       },
       future: getUserScreen(),
@@ -46,9 +39,9 @@ class MyApp extends StatelessWidget {
 
   Future<Widget> getUserScreen() async {
     final userId = await ProfileManager.getUserId();
-    if(userId == 0){
+    if (userId == 0) {
       return const LoginScreen();
-    }else{
+    } else {
       return const MainPage();
     }
   }
@@ -68,10 +61,14 @@ class _MainPageState extends State<MainPage> {
   String pageTitle = "";
 
   final nav_screens = [
-    const HomeScreen(),
-    const RetailerListScreen(),
-    //const LearningScreen(),
-    ChangeNotifierProvider<TaskViewModel>(create: (_)=>TaskViewModel(),child: const TaskListScreen(),)
+    ChangeNotifierProvider<HomeViewModel>(
+        create: (_) => HomeViewModel(), child: const HomeScreen()),
+    ChangeNotifierProvider<HomeViewModel>(
+        create: (_) => HomeViewModel(), child: const RetailerListScreen()),
+    ChangeNotifierProvider<TaskViewModel>(
+      create: (_) => TaskViewModel(),
+      child: const TaskListScreen(),
+    )
   ];
 
   @override
@@ -99,7 +96,11 @@ class _MainPageState extends State<MainPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => ChangeNotifierProvider<TaskViewModel>(create: (_)=>TaskViewModel(),child: const TaskCalendarScreen(),)),
+                              builder: (_) =>
+                                  ChangeNotifierProvider<TaskViewModel>(
+                                    create: (_) => TaskViewModel(),
+                                    child: const TaskCalendarScreen(),
+                                  )),
                         ).then((value) => setState(() {}));
                       });
                     },
@@ -124,7 +125,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                   FutureBuilder(
                     future: getName(),
-                    builder: (context,snapshot)=>Text(
+                    builder: (context, snapshot) => Text(
                       snapshot.data as String,
                       style: const TextStyle(fontSize: 18.0),
                     ),
@@ -151,7 +152,7 @@ class _MainPageState extends State<MainPage> {
                   if (x) {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (c) => const LoginScreen()),
-                            (route) => false);
+                        (route) => false);
                   } else {
                     //todo
                   }
@@ -205,7 +206,7 @@ class _MainPageState extends State<MainPage> {
     ));
   }
 
-  Future<String> getName()async {
+  Future<String> getName() async {
     return await ProfileManager.getName();
   }
 }

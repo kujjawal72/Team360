@@ -11,10 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:team360/base/file_upload_response.dart';
 import 'package:team360/base/response.dart';
 import 'package:team360/home/viewmodel/home_viewmodel.dart';
-import 'package:team360/touchbase/model/retailer_list_model.dart' as ret;
 import 'package:team360/touchbase/model/salesman_touchbase_request_model.dart';
 import 'package:team360/touchbase/model/salesman_touchbase_response_model.dart';
-import 'package:team360/touchbase/retailer_list_dialog.dart';
 import 'package:team360/util/profile_manager.dart';
 import 'package:team360/util/progress_dialog.dart';
 import 'package:team360/util/utils.dart';
@@ -22,7 +20,7 @@ import 'package:team360/util/utils.dart';
 import '../touchbase_details.dart';
 
 class Body extends StatefulWidget {
-  const Body({Key? key,required this.retailerId}) : super(key: key);
+  const Body({Key? key, required this.retailerId}) : super(key: key);
   final int retailerId;
 
   @override
@@ -35,14 +33,12 @@ class _BodyState extends State<Body> {
   double latitude = 0;
   double longitude = 0;
 
-
-
   _imgFromCamera() async {
     XFile? image =
-    await _picker?.pickImage(source: ImageSource.camera, imageQuality: 50);
+        await _picker?.pickImage(source: ImageSource.camera, imageQuality: 50);
 
     setState(() {
-      if(image != null){
+      if (image != null) {
         Provider.of<HomeViewModel>(context, listen: false)
             .uploadImageFile(image.path);
         _image = image;
@@ -79,7 +75,8 @@ class _BodyState extends State<Body> {
 
     if (permission == LocationPermission.deniedForever) {
       Fluttertoast.showToast(
-          msg: 'Location permissions are permanently denied, we cannot request permissions.');
+          msg:
+              'Location permissions are permanently denied, we cannot request permissions.');
       return;
     }
 
@@ -93,10 +90,10 @@ class _BodyState extends State<Body> {
 
   _imgFromGallery() async {
     XFile? image =
-    await _picker?.pickImage(source: ImageSource.gallery, imageQuality: 50);
+        await _picker?.pickImage(source: ImageSource.gallery, imageQuality: 50);
 
     setState(() {
-      if(image != null){
+      if (image != null) {
         Provider.of<HomeViewModel>(context, listen: false)
             .uploadImageFile(image.path);
         _image = image;
@@ -136,9 +133,7 @@ class _BodyState extends State<Body> {
 
   Widget _getImageStatus() {
     Response imageUploadResponse =
-        Provider
-            .of<HomeViewModel>(context)
-            .uploadImageResponse;
+        Provider.of<HomeViewModel>(context).uploadImageResponse;
     switch (imageUploadResponse.status) {
       case Status.ERROR:
         Fluttertoast.showToast(msg: "Failed to upload image");
@@ -146,7 +141,7 @@ class _BodyState extends State<Body> {
             padding: const EdgeInsets.all(30),
             margin: const EdgeInsets.all(4),
             decoration:
-            const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
             child: Image.asset(
               "assets/icons/selfie.png",
               width: 80,
@@ -157,7 +152,7 @@ class _BodyState extends State<Body> {
             padding: const EdgeInsets.all(30),
             margin: const EdgeInsets.all(4),
             decoration:
-            const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
             child: Image.asset(
               "assets/icons/selfie.png",
               width: 80,
@@ -173,18 +168,14 @@ class _BodyState extends State<Body> {
             .FilePath;
 
         return CircleAvatar(
-          backgroundImage: FileImage(
-              File(_image?.path ?? "")
-          ),
+          backgroundImage: FileImage(File(_image?.path ?? "")),
         );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return Container(
       margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 8),
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
@@ -271,11 +262,11 @@ class _BodyState extends State<Body> {
                   )),
             ),
             onTap: () {
-              if(uploadedImagePath?.isEmpty??true){
+              if (uploadedImagePath?.isEmpty ?? true) {
                 Fluttertoast.showToast(msg: "Please upload a selfie");
-              }else if(latitude == 0){
+              } else if (latitude == 0) {
                 Fluttertoast.showToast(msg: "Please select your location");
-              }else{
+              } else {
                 getNearestRetailerList();
               }
               /*Navigator.push(
@@ -290,7 +281,6 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> getNearestRetailerList() async {
-
     try {
       ProgressDialog.show(context);
       final userId = await ProfileManager.getUserId();
@@ -299,19 +289,26 @@ class _BodyState extends State<Body> {
           latitude: latitude.toString(),
           longitude: longitude.toString(),
           lastUpdateId: userId,
-          salesmanSelfyImage: uploadedImagePath??"",
+          salesmanSelfyImage: uploadedImagePath ?? "",
           startTime: todayTime(),
           retailerId: widget.retailerId);
       Fimber.i("${body.toJson()}");
-      final touchbaseRes = await returnResponse(await http.post(Uri.parse(
-          baseUrl + "bakes_and_cakes/BakesAndCakes/salesmantouchbasepost"),
-          headers: headers, body: jsonEncode(body)));
+      final touchbaseRes = await returnResponse(await http.post(
+          Uri.parse(
+              baseUrl + "bakes_and_cakes/BakesAndCakes/salesmantouchbasepost"),
+          headers: headers,
+          body: jsonEncode(body)));
       final touchbaseData = SalesmanTouchBaseResponse.fromJson(touchbaseRes);
       final touchbaseId = touchbaseData.responseList.salesmanTouchbaseId;
       Navigator.pop(context);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => TouchBaseDetails(retailerId: widget.retailerId,touchbaseId: touchbaseId)),
+        MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider<HomeViewModel>(
+                  create: (_) => HomeViewModel(),
+                  child: TouchBaseDetails(
+                      retailerId: widget.retailerId, touchbaseId: touchbaseId),
+                )),
       );
     } catch (e) {
       Fimber.i("$e");

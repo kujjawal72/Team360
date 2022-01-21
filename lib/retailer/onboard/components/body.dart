@@ -373,7 +373,13 @@ class _BodyState extends State<Body> {
             ),
             InkWell(
               onTap: () {
-
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OnBoardRetailerDoc(
+                          request: request,
+                        )));
+                return;
                 if (uploadedImagePath.isEmpty) {
                   Fluttertoast.showToast(msg: "Please upload an image");
                   return;

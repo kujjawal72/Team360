@@ -246,29 +246,34 @@ class _DocBodyState extends State<DocBody> {
       onTap: () {
         _pickDocFile();
       },
-      child: Container(
-        margin: const EdgeInsets.only(left: 5, right: 5),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 3.0,
-              spreadRadius: 0.0,
-              offset: Offset(3.0, 3.0), // shadow direction: bottom right
-            )
-          ],
-        ),
-        child: Row(
-          children: [
-            const Padding(padding: EdgeInsets.all(3)),
-            const Icon(Icons.cloud_upload_rounded),
-            const Padding(padding: EdgeInsets.all(8)),
-            Text("Upload ${_currentValue!.title} (pdf/image)")
-          ],
-        ),
+      child: Column(
+        children: [
+          Container(padding: const EdgeInsets.all(8),alignment: Alignment.centerLeft,child: Text(localFilePath.split("/").last)),
+          Container(
+            margin: const EdgeInsets.only(left: 5, right: 5),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 3.0,
+                  spreadRadius: 0.0,
+                  offset: Offset(3.0, 3.0), // shadow direction: bottom right
+                )
+              ],
+            ),
+            child: Row(
+              children: [
+                const Padding(padding: EdgeInsets.all(3)),
+                const Icon(Icons.cloud_upload_rounded),
+                const Padding(padding: EdgeInsets.all(8)),
+                Text("Upload ${_currentValue!.title} (pdf/image)")
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -279,7 +284,9 @@ class _DocBodyState extends State<DocBody> {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      localFilePath = result.files.single.path!;
+      setState(() {
+        localFilePath = result.files.single.path!;
+      });
     } else {
 
     }
@@ -300,10 +307,10 @@ class _DocBodyState extends State<DocBody> {
       return;
     }
 
-    Provider.of<HomeViewModel>(context, listen: false)
+   /* Provider.of<HomeViewModel>(context, listen: false)
         .addReatilerResponseFunc(widget.request, DocumetType(
         documentsTypeId: _currentValue!.id,
         documentLink: localFilePath,
-        documentNo: int.parse(_inputController.text)));
+        documentNo: int.parse(_inputController.text)));*/
   }
 }
