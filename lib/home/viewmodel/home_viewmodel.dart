@@ -151,7 +151,6 @@ class HomeViewModel extends ChangeNotifier {
       try{
         final userId = await ProfileManager.getUserId();
         TouchBaseResponse data = await repo.getTouchbaseDetails(retailerId, touchbaseId);
-        Fimber.i("jjhvgssuyv");
         _getTouchbaseDetails = Response.completed(data);
       }catch(e,stacktrace){
         _getTouchbaseDetails = Response.error(e.toString());

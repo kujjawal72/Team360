@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:team360/task_list/model/model1.dart';
+import 'package:team360/touchbase/model/complete_task_request.dart';
+import 'package:team360/util/utils.dart';
+import 'package:http/http.dart' as http;
 
 class ItemTask extends StatefulWidget {
   const ItemTask({Key? key,required this.data }) : super(key: key);
@@ -52,6 +58,13 @@ class _ItemTaskState extends State<ItemTask> {
                     onChanged: (newVal) {
                       setState(() {
                         widget.data.tasks[index].isComplete = newVal??false ? "Y" : "N";
+                        final body = CompleteTaskRequest();
+                        if(newVal??false){
+                          body.isComplte = 1;
+                        }else{
+                          body.isComplte = 0;
+                        }
+                        callCompleteApi(body,widget.data.tasks[index].salesmanTaskId);
                       });
                     },
                     controlAffinity: ListTileControlAffinity.leading),
@@ -64,5 +77,12 @@ class _ItemTaskState extends State<ItemTask> {
         ],
       ),
     );
+  }
+  Future<void> callCompleteApi(CompleteTaskRequest body,int taskId)async {
+    Fimber.i("$taskId --${body.toJson()}");
+    final completeTask = await returnResponse(await http.put(Uri.parse(
+        baseUrl + "bakes_and_cakes/BakesAndCakes/updateTask/$taskId"),
+        headers: headers, body: jsonEncode(body)));
+    Fimber.i("$completeTask");
   }
 }

@@ -30,22 +30,24 @@ class TouchbaseDetailsBoody extends StatefulWidget {
 }
 
 class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
-  final retNameCont = TextEditingController();
-  final addressCont = TextEditingController();
-  final ownerNameCont = TextEditingController();
-  final mobileNumCont = TextEditingController();
-  final emailCont = TextEditingController();
+  final _retNameCont = TextEditingController();
+  final _addressCont = TextEditingController();
+  final _ownerNameCont = TextEditingController();
+  final _mobileNumCont = TextEditingController();
+  final _emailCont = TextEditingController();
+  final _noteController = TextEditingController();
 
   final salesmanRetailerTaskType = List<SalesmanRetailerTaskType>.empty(
       growable: true);
 
   @override
   void dispose() {
-    retNameCont.dispose();
-    addressCont.dispose();
-    ownerNameCont.dispose();
-    mobileNumCont.dispose();
-    emailCont.dispose();
+    _retNameCont.dispose();
+    _addressCont.dispose();
+    _ownerNameCont.dispose();
+    _mobileNumCont.dispose();
+    _emailCont.dispose();
+    _noteController.dispose();
     super.dispose();
   }
 
@@ -75,12 +77,12 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
         return const Center(child: CircularProgressIndicator(),);
       case Status.COMPLETED:
         final data = (tr.data as TouchBaseResponse).responseList;
-        retNameCont.text = data.name;
-        addressCont.text = data.location;
-        ownerNameCont.text = data.ownerName;
-        mobileNumCont.text = data.whatsappNo;
-        emailCont.text = data.email;
-        Fimber.i("${data.salesmanTouchbaseId} ${data.retailerId}");
+        _retNameCont.text = data.name;
+        _addressCont.text = data.location;
+        _ownerNameCont.text = data.ownerName;
+        _mobileNumCont.text = data.whatsappNo;
+        _emailCont.text = data.email;
+        Fimber.i("salesmanTouchbaseId = ${data.salesmanTouchbaseId} retailerId = ${data.retailerId}");
         return ListView(
           children: [
             Row(
@@ -90,7 +92,7 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
                 Expanded(
                     child: EditBoxTopHintWhiteRounded(
                       hint: "Retailer full name",
-                      controller: retNameCont,
+                      controller: _retNameCont,
                     )),
                 Container(
                   margin: const EdgeInsets.all(5),
@@ -122,7 +124,7 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
                 Expanded(
                     child: EditBoxTopHintWhiteRounded(
                       hint: "Retailer address",
-                      controller: addressCont,
+                      controller: _addressCont,
                     )),
                 Container(
                   padding: const EdgeInsets.all(15),
@@ -153,7 +155,7 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
                 Expanded(
                     child: EditBoxTopHintWhiteRounded(
                       hint: "Owner's name",
-                      controller: ownerNameCont,
+                      controller: _ownerNameCont,
                     )),
                 Container(
                   padding: const EdgeInsets.all(15),
@@ -175,12 +177,12 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
                 Expanded(
                     child: EditBoxTopHintWhiteRounded(
                       hint: "Mobile No",
-                      controller: mobileNumCont,
+                      controller: _mobileNumCont,
                     )),
                 Expanded(
                     child: EditBoxTopHintWhiteRounded(
                       hint: "Email",
-                      controller: emailCont,
+                      controller: _emailCont,
                     )),
               ],
             ),
@@ -350,17 +352,25 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
               ),
               onTap: () {
                 bool isAllComplete = true;
+                salesmanRetailerTaskType.clear();
                 for (var x in data.taskList) {
                   if (x.isComplete == 0) {
                     isAllComplete = false;
-                    break;
+                    salesmanRetailerTaskType.add(
+                      SalesmanRetailerTaskType(taskId: x.retailerTaskTypeId, status: 0)
+                    );
+                  }else{
+                    salesmanRetailerTaskType.add(
+                        SalesmanRetailerTaskType(taskId: x.retailerTaskTypeId, status: 1)
+                    );
                   }
                 }
                 if (!isAllComplete) {
-                  CheckoutFeedbackDialog.show(context);
+                  //CheckoutFeedbackDialog.show(context);
+                  manageCheckoutWithNote(data);
                 } else {
-                  //checkoutTouchbase(data);
-                  checkOutFalse(context);
+                  checkoutTouchbase(data);
+                  //checkOutFalse(context);
                 }
               },
             )
@@ -379,25 +389,57 @@ class _TouchbaseDetailsBoodyState extends State<TouchbaseDetailsBoody> {
       ..pop()..pop()..pop();
   }
 
-  Future<void> checkoutTouchbase(ResponseList data) async {
+  Future<void> checkoutTouchbase(ResponseList data, {String note = ""}) async {
     try {
       final now = DateTime.now();
       final temp = data.startTime.split(":");
-      Fimber.i("${data.startTime}");
+      Fimber.i("startTime = ${data.startTime} temp = $temp");
+      final diff = now.difference(DateTime(now.year,now.month,now.day,int.parse(temp[0]),int.parse(temp[1]),int.parse(temp[2])));
+      int minute = diff.inMinutes % 60;
+      int hour = (diff.inMinutes / 60).truncate();
       final body = CheckoutRequest(
           salesmanRetailerTaskType: salesmanRetailerTaskType,
-          note: "",
-          touchbaseEndTime: DateFormat('h:mm a').format(now),
-          totalTimeSpent: now.difference(DateTime(now.year,now.month,now.day,int.parse(temp[0]),int.parse(temp[1]),int.parse(temp[2]))).inMinutes.toString());
-      Fimber.i("${body.toJson()}");
+          note: note,
+          touchbaseEndTime: DateFormat('hh:mm:ss').format(now),
+          totalTimeSpent: "${hour.toString().padLeft(2,"0")}:${minute.toString().padLeft(2,"0")}:00");
+      Fimber.i("body = ${body.toJson()}");
       final touchbaseRes = await returnResponse(await http.put(Uri.parse(
           baseUrl + "bakes_and_cakes/BakesAndCakes/retailerCheckOut/${data.retailerId}/${data.salesmanId}/${data.salesmanTouchbaseId}"),
           headers: headers, body: jsonEncode(body)));
       Fimber.i("$touchbaseRes");
       Fluttertoast.showToast(msg: "Touchbase checkout successful");
-      Navigator.pop(context);
+     // Navigator.pop(context);
     } catch (e) {
       Fimber.i("$e");
+    }
+  }
+
+  Future<dynamic> openDialog() async {
+    return showDialog(context: context, builder: (context)=>AlertDialog(
+      title: const Text("All tasks are not completed, Give Reason:"),backgroundColor: Colors.white,
+      content: TextField(
+        minLines: 10,
+        maxLines: 15,
+        controller: _noteController,keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,autofocus: true,onSubmitted: (newVal){
+        Navigator.pop(context,newVal);
+      },
+      ),
+      actions: [
+        TextButton(onPressed: (){
+          Navigator.pop(context);
+        }, child: const Text("CANCEL",style: TextStyle(color: Colors.grey),)),
+        TextButton(onPressed: (){
+          Navigator.pop(context,_noteController.text);
+        }, child: const Text("SUBMIT",style: TextStyle(color: Colors.blue),)),
+      ],
+    ));
+  }
+
+  Future<void> manageCheckoutWithNote(ResponseList data)async {
+    final res = await openDialog();
+    if(res != null && (res as String).isNotEmpty){
+      checkoutTouchbase(data,note: res);
     }
   }
 }
